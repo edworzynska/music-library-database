@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="">
+<head>
+    <title>Album</title>
+</head>
+<body>
+<h1 th:text="${album.getTitle()}">album</h1>
+<p>Artist: <span th:text="${artist.name}"></span></p>
+<p>Release Year: <span th:text="${album.releaseYear}"></span></p>
+<p>Genre: <span th:text="${artist.genre}"></span></p>
+<a href="/albums">Back to Albums</a>
+</body>
+</html>

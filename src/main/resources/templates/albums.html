@@ -7,9 +7,9 @@
 <h1>Albums</h1>
 <ul>
     <th:block th:each="album : ${albums}">
-        <li th:text="${album}"></li>
+        <li><a th:href="@{/albums/{id}(id=${album.id})}" th:text="${album}"></a></li>
     </th:block>
 </ul>
-<a href="/">Back to Home</a>
+<a href="/">Back to Homepage</a>
 </body>
 </html>

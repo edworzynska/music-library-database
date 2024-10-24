@@ -33,9 +33,13 @@ public class AlbumService {
         if (album.isPresent()){
             return album.get();
         }
-        else throw new RuntimeException("No matching artist found in the database!");
+        else throw new RuntimeException("No matching album found in the database!");
     }
     public List<Album> findAllByArtistId(Long artistId){
         return albumRepository.findByArtistId(artistId);
+    }
+    public Artist findArtistByAlbumId(Long albumId) {
+        Optional<Album> album = albumRepository.findById(albumId);
+        return album.map(Album::getArtist).orElse(null); // Returns the artist if the album is found
     }
 }

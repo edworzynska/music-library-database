@@ -80,4 +80,12 @@ public class MusicLibraryDatabaseApplication {
 		model.addAttribute("album", albumService.findAllByArtistId(id));
 		return "artist-details";
 	}
+	@GetMapping("albums/{id}")
+	public String getAlbum(@PathVariable Long id, Model model){
+		Album album = albumService.getById(id);
+		Artist artist = albumService.findArtistByAlbumId(album.getId());
+		model.addAttribute("album", album);
+		model.addAttribute("artist", artist);
+		return "album-details";
+	}
 }
