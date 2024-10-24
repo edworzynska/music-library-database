@@ -1,4 +1,4 @@
-package com.example.music_library_database;
+package com.example.music_library_database.model;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -37,5 +37,8 @@ public class Artist {
     public Artist(String name, String genre) {
         this.name = name;
         this.genre = genre;
+    }
+    public String toString(){
+        return getId() + ". " + getName() + ", " + "genre: " + getGenre();
     }
 }

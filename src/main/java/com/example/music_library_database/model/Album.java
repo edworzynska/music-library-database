@@ -1,4 +1,4 @@
-package com.example.music_library_database;
+package com.example.music_library_database.model;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -40,5 +40,8 @@ public class Album {
     }
     public String toString(){
         return getTitle() + " - " + getArtist().getName();
+    }
+    public String getRecord(){
+        return getReleaseYear() + " - " + getTitle();
     }
 }

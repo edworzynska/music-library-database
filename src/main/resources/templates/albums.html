@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="">
+<head>
+    <title>Albums List</title>
+</head>
+<body>
+<h1>Albums</h1>
+<ul>
+    <th:block th:each="album : ${albums}">
+        <li th:text="${album}"></li>
+    </th:block>
+</ul>
+<a href="/">Back to Home</a>
+</body>
+</html>

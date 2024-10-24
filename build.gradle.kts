@@ -52,7 +52,8 @@ dependencies {
 
 	implementation("com.h2database:h2:2.3.232")
 
-
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.3.4")
 }
 
 tasks.withType<Test> {

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="">
+<head>
+    <title>Artist</title>
+</head>
+<body>
+<h1 th:text="${artist.getName()}">artist</h1>
+<ul>
+    <th:block th:each="album : ${album}">
+        <li th:text="${album.getRecord()}"></li>
+    </th:block>
+</ul>
+<a href="/">Back to Home</a>
+</body>
+</html>
