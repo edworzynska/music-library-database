@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,12 +24,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class MusicLibraryDatabaseApplicationTests {
 
+	Artist artist1;
+	Artist artist2;
+	Artist artist3;
+	Artist artist4;
+	Album album1;
+	Album album2;
+
 	@Autowired
 	private MockMvc mockMvc;
 	@Autowired
 	private ArtistRepository artistRepository;
 	@Autowired
 	private ArtistService artistService;
+	@Autowired
+	private AlbumRepository albumRepository;
+	@Autowired
+	private AlbumService albumService;
 	@Autowired
 	private MusicLibraryDatabaseApplication musicLibraryDatabaseApplication;
 
@@ -42,22 +54,22 @@ class MusicLibraryDatabaseApplicationTests {
     @BeforeEach
     public void setUp(){
 
-			Artist artist1 = new Artist();
+			artist1 = new Artist();
 			artist1.setName("Muse");
 			artist1.setGenre("Alternative");
 			artistRepository.save(artist1);
 
-			Artist artist2 = new Artist();
+			artist2 = new Artist();
 			artist2.setName("ABBA");
 			artist2.setGenre("Pop");
 			artistRepository.save(artist2);
 
-			Artist artist3 = new Artist();
+			artist3 = new Artist();
 			artist3.setName("Fryderyk Chopin");
 			artist3.setGenre("Classical");
 			artistRepository.save(artist3);
 
-			Artist artist4 = new Artist();
+			artist4 = new Artist();
 			artist4.setName("Placebo");
 			artist4.setGenre("Alternative");
 			artistRepository.save(artist4);
@@ -88,7 +100,7 @@ class MusicLibraryDatabaseApplicationTests {
 	void createsAlbum() {
 		var result = musicLibraryDatabaseApplication.createAlbum("Absolution", (short) 2004, 2L);
 		assertEquals("Album Absolution successfully added to the database!", result);
-		while(true){}
+		albumRepository.deleteById(1L);
 	}
 
 	@Test
@@ -102,6 +114,38 @@ class MusicLibraryDatabaseApplicationTests {
 		mockMvc.perform(post("/create-album").param("artistId", "1").param("releaseYear", "2004"))
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string("Error: missing parameter TITLE"));
+	}
+
+	@Test
+	void returnsSuccessfulMessageIfAlbumIsCreated() throws Exception {
+		mockMvc.perform(post("/create-album").param("title", "Absolution").param("releaseYear", "2004").param("artistID", "1"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().string("Album Absolution successfully added to the database!"));
+	}
+	@Test
+	void returnsMessageIfNoAlbumsPresentInDatabase() throws Exception {
+		mockMvc.perform(get("/albums"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().string("No albums in the database!"));
+	}
+	@Test
+	void returnsStringWithTheAlbums() throws Exception {
+
+		album1 = new Album();
+		album1.setArtist(artist4);
+		album1.setTitle("Placebo");
+		album1.setReleaseYear((short) 1996);
+		albumRepository.save(album1);
+
+		album2 = new Album();
+		album2.setArtist(artist1);
+		album2.setTitle("Black Holes & Revelations");
+		album2.setReleaseYear((short) 2007);
+		albumRepository.save(album2);
+
+		mockMvc.perform(get("/albums"))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().string("Placebo - Placebo\nBlack Holes & Revelations - Muse\n"));
 
 	}
 }

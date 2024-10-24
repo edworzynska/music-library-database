@@ -6,10 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 @RestController
@@ -37,9 +34,15 @@ public class MusicLibraryDatabaseApplication {
 		Artist artist = artistService.getById(artistID);
 		Album album = albumService.createAlbum(title, artist, releaseYear);
 		return String.format("Album %s successfully added to the database!", album.getTitle());
-
 	}
-
+	@GetMapping("/albums")
+	public String displayAlbums(){
+		StringBuilder str = new StringBuilder();
+		for (Album album : albumService.all()){
+			str.append(album.toString()).append("\n");
+		}
+		return str.isEmpty() ? "No albums in the database!" : str.toString();
+	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public ResponseEntity<String> missingParameters(MissingServletRequestParameterException e){
