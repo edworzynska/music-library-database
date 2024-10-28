@@ -40,6 +40,6 @@ public class AlbumService {
     }
     public Artist findArtistByAlbumId(Long albumId) {
         Optional<Album> album = albumRepository.findById(albumId);
-        return album.map(Album::getArtist).orElse(null); // Returns the artist if the album is found
+        return album.map(Album::getArtist).orElse(null);
     }
 }

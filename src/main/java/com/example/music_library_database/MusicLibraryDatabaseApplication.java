@@ -35,7 +35,7 @@ public class MusicLibraryDatabaseApplication {
 
 	@GetMapping("/")
 	public String homePage() {
-		return "index"; // This will look for a file named index.html in templates directory
+		return "index";
 	}
 
 	@GetMapping("/create-artist-form")
@@ -52,7 +52,7 @@ public class MusicLibraryDatabaseApplication {
 
 	@GetMapping("/create-album-form")
 	public String createAlbumForm() {
-		return "create-album"; // This will look for create-album.html
+		return "create-album";
 	}
 
 	@PostMapping("/create-album")

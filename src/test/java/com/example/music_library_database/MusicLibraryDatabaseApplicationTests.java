@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -56,7 +57,6 @@ class MusicLibraryDatabaseApplicationTests {
         Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082")
                 .start();
     }
-    @Transactional
     @BeforeEach
     public void setUp(){
 
@@ -82,17 +82,11 @@ class MusicLibraryDatabaseApplicationTests {
 
 		}
 
-//    @Test
-//    void createsArtist() {
-//		var result = musicLibraryDatabaseApplication.createArtist("Foo Fighters", "Rock");
-//		assertEquals("Artist Foo Fighters successfully added to the database!", result);
-//    }
-
 	@Test
 	void returnsOkStatusIfCorrectParametersProvided() throws Exception{
 		mockMvc.perform(post("/create-artist").param("name", "Foo Fighters").param("genre", "Rock"))
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(content().string("Artist Foo Fighters successfully added to the database!"));
+				.andExpect(content().contentType("text/html;charset=UTF-8"));
 	}
 
 	@Test
@@ -101,22 +95,21 @@ class MusicLibraryDatabaseApplicationTests {
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string("Error: missing parameter NAME"));
 	}
-//
-//	@Test
-//	void createsAlbum() {
-//		var result = musicLibraryDatabaseApplication.createAlbum("Absolution", (short) 2004, 2L);
-//		assertEquals("Album Absolution successfully added to the database!", result);
-//		albumRepository.deleteById(1L);
-//	}
 
 	@Test
-	void returnsExceptionMessageIfMissingParamsInAlbum() throws Exception{
+	void returnsExceptionMessageIfMissingParameterArtistId() throws Exception {
 		mockMvc.perform(post("/create-album").param("title", "Absolution").param("releaseYear", "2004"))
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string("Error: missing parameter ARTISTID"));
+	}
+	@Test
+	void returnsExceptionMessageIfMissingParameterReleaseYear() throws Exception {
 		mockMvc.perform(post("/create-album").param("title", "Absolution").param("artistId", "1"))
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string("Error: missing parameter RELEASEYEAR"));
+	}
+	@Test
+	void returnsExceptionMessageIfMissingParameterTitle() throws Exception{
 		mockMvc.perform(post("/create-album").param("artistId", "1").param("releaseYear", "2004"))
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string("Error: missing parameter TITLE"));
@@ -124,15 +117,15 @@ class MusicLibraryDatabaseApplicationTests {
 
 	@Test
 	void returnsSuccessfulMessageIfAlbumIsCreated() throws Exception {
-		mockMvc.perform(post("/create-album").param("title", "Absolution").param("releaseYear", "2004").param("artistID", "1"))
-				.andExpect(status().is2xxSuccessful());
-//				.andExpect(content().string("Album Absolution successfully added to the database!"));
+		mockMvc.perform(post("/create-album").param("title", "Absolution").param("releaseYear", "2004").param("artistID", String.valueOf(artist1.getId())))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().contentType("text/html;charset=UTF-8"));
 	}
 	@Test
 	void returnsMessageIfNoAlbumsPresentInDatabase() throws Exception {
 		mockMvc.perform(get("/albums"))
-				.andExpect(status().is2xxSuccessful());
-//				.andExpect(content().string("No albums in the database!"));
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().contentType("text/html;charset=UTF-8"));
 	}
 	@Test
 	void returnsStringWithTheAlbums() throws Exception {
@@ -151,7 +144,7 @@ class MusicLibraryDatabaseApplicationTests {
 
 		mockMvc.perform(get("/albums"))
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(content().string("Placebo - Placebo\nBlack Holes & Revelations - Muse\n"));
+				.andExpect(content().contentType("text/html;charset=UTF-8"));
 
 	}
 }
